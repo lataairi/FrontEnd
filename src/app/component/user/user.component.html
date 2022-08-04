@@ -1,0 +1,107 @@
+<br><div class="container">
+  <div class="row">
+  <div class="col-10">
+    
+    <form class="form-inline">  
+      <div class="form-group">  
+      <b>Search</b>  
+      <input type="text" class="form-control" [(ngModel)]="firstName" (ngModelChange)="search()" name="firstName" autocomplete="on" >  
+      </div>  
+      </form>
+  </div>
+  <div class="col-2">
+<button type="button" class="btn btn-primary" title="Add" data-toggle="tooltip"  data-toggle="modal" data-target="#userModal" (click)="resetUserForm(userForm)" ><i class="fa fa-plus" aria-hidden="true"></i>
+</button>
+</div>
+</div>
+<!--add/edit user modal-->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">User Details</h5>
+        <button type="button" class="close" data-dismiss="modal" #userModalDismis aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--Save user form-->
+  <form [formGroup]="userForm"  (ngSubmit)="saveUser(userModalDismis)">  
+    <div class="modal-body">
+    <div class="form-row">
+      <div class="col">First Name
+        <input type="text" class="form-control" sortable="true" formControlName="FirstName" placeholder="First Name" [(ngModel)]="user.firstName">
+        <span class="field-validation-valid text-danger" *ngIf="(userForm.submitted ) && userForm.controls.FirstName.errors?.required">
+          First Name is required.</span>
+      </div>
+      <div class="col">Last Name
+        <input type="text" class="form-control" formControlName="LastName" placeholder="Last Name" [(ngModel)]="user.lastName">
+      </div>
+      <div class="col">Email
+        <input type="text" class="form-control" formControlName="Email" placeholder="Email" [(ngModel)]="user.email">
+        <span class="text-danger"
+           *ngIf="((userForm.submitted ) && userForm.controls.email.errors?.pattern)">Please
+                              enter a valid email address.</span>
+<span class="text-danger"
+                 *ngIf="(!(userForm.submitted )&&(userForm.controls.email?.invalid && (userForm.controls.email.dirty || userForm.controls.email.touched)))">Please
+                     enter a valid email address.</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">Phone
+        <input type="text" class="form-control" formControlName="Phone" placeholder="Phone" [(ngModel)]="user.phone">
+      </div>
+      <div class="col">City
+        <input type="text" class="form-control" formControlName="City" placeholder="City" [(ngModel)]="user.city">
+      </div>
+      <div class="col">Address
+        <input type="text" class="form-control" formControlName="Address" placeholder="Address" [(ngModel)]="user.address">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Save</button>
+  </div>
+  </form>    
+</div>
+</div>
+  
+</div>
+<!--User table-->
+<table class="table table-hover" >
+<thead class="thead-dark">
+  <tr ngclass="btn-primary">
+    <th><i class="fas fa-sort"></i>Id</th>
+    <th><i class="fas fa-sort"></i>FirstName</th>
+    <th>LastName</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>City</th>
+    <th>Address</th>
+    <th>Actions</th>  
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let user of Users| filter:firstName| paginate: { id: 'userPagination',  itemsPerPage: 5, currentPage: p }; ">
+    <td>{{user.id}}</td>
+    <td>{{user.firstName}}</td>
+    <td>{{user.lastName}}</td>
+    <td>{{user.email}}</td>
+    <td>{{user.phone}}</td>
+    <td>{{user.city}}</td>
+    <td>{{user.address}}</td>
+    <td>
+       <button class="btn btn-primary mx-1" type="button"  title="Edit" data-toggle="tooltip" data-toggle="modal" data-target="#userModal" (click)="editUser(user.id)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+       </button>
+       <button type="button"class="btn btn-primary mx-1" title="Delete" data-toggle="tooltip" (click)="deleteUser(user.id)"><i class="fa fa-trash" aria-hidden="true"></i>
+       </button>
+    </td>
+  </tr>
+</tbody>
+</table> 
+<div>
+  <pagination-controls id="userPagination" previousLabel="Prev" nextLabel="Next" [responsive]="true"
+  (pageChange)="p=$event"></pagination-controls>
+</div>
+</div> 
